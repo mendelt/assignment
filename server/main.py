@@ -8,7 +8,7 @@ PORT = 8888
 class EmailsHandler(tornado.web.RequestHandler):
 
     def get(self):
-        self.write(store.all())
+        self.write({id: email.serialize() for (id, email) in store.all().items()})
 
     def post(self):
         new_id = store.store(Email.parse(json.loads(self.request.body)))
