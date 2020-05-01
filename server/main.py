@@ -12,7 +12,7 @@ class EmailsHandler(tornado.web.RequestHandler):
     def get(self):
         self.write("Hello Kopano!")
 
-    def post(self, _):
+    def post(self):
         new_id = store.store(Email.parse(json.loads(self.request.body)))
         self.write({'id': new_id})
 
@@ -25,7 +25,7 @@ class Email:
 
     @staticmethod
     def parse(json_email):
-        return Email(json_email["email"], json_email["body"], json_email["to"])
+        return Email(json_email["subject"], json_email["body"], json_email["to"])
 
 
 class EmailStore:
@@ -34,13 +34,13 @@ class EmailStore:
     """
 
     def __init__(self):
-        self.auto_id = 0
+        self._auto_id = 0
         self._store = {}
 
     def store(self, email):
-        self.auto_id += 1
-        self.store[self.auto_id] = email
-        return self.auto_id
+        self._auto_id += 1
+        self._store[self._auto_id] = email
+        return self._auto_id
 
     def retrieve(self, id):
         return self.store[id]
